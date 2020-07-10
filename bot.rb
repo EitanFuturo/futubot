@@ -1,6 +1,7 @@
 require 'socket'
 require 'byebug'
 require 'dotenv/load'
+require "google/cloud/translate"
 
 TWITCH_HOST = "irc.chat.twitch.tv"
 TWITCH_PORT = 6667
@@ -11,6 +12,7 @@ class TwitchBot
     @password = ENV['TWITCH_PASSWORD']
     @channel = ENV['TWITCH_CHANNEL']
     @socket = TCPSocket.open(TWITCH_HOST, TWITCH_PORT)
+    @api_project_id = ENV['TRANSLATE_ID']
 
     write_to_system "PASS #{@password}"
     write_to_system "NICK #{@nickname}"
@@ -49,8 +51,13 @@ class TwitchBot
         if content.include? "!!translate"
           content.slice! "!!translate"
           text = content.slice! /(["'])(?:(?=(\\?))\2.)*?\1/
-          lang = content
-          write_to_chat "translate: #{text} lang: #{content}"
+          text.gsub!("\"", "")
+          lang = content.strip!
+
+          translate = Google::Cloud::Translate.translation_v2_service project_id: @api_project_id
+          translation = translate.translate text, to: lang
+
+          write_to_chat "translated: #{text} to: #{translation.text.inspect} from: #{translation.from} to: #{translation.to}"
         end
         
       end
