@@ -48,10 +48,6 @@ class TwitchBot
           write_to_chat "!props"
         end
 
-        if content.include? "!translate"
-          write_to_chat "#{username} try the command !!translate with double exlamation marks."
-        end
-
         if content.include? "!!translate"
           content.slice! "!!translate"
           text = content.slice! /(["'])(?:(?=(\\?))\2.)*?\1/
