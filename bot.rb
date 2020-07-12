@@ -48,16 +48,24 @@ class TwitchBot
           write_to_chat "!props"
         end
 
+        if content.include? "!translate"
+          write_to_chat "#{username} try the command !!translate with double exlamation marks."
+        end
+
         if content.include? "!!translate"
           content.slice! "!!translate"
           text = content.slice! /(["'])(?:(?=(\\?))\2.)*?\1/
-          text.gsub!("\"", "")
+          text = text.force_encoding('UTF-8') if text
+          text.gsub!("\"", "").encode!('UTF-8', invalid: :replace, undef: :replace, replace: '🤷') if text
           lang = content.strip!
 
           translate = Google::Cloud::Translate.translation_v2_service project_id: @api_project_id
-          translation = translate.translate text, to: lang
-
-          write_to_chat "translated: #{text} to: #{translation.text.inspect} from: #{translation.from} to: #{translation.to}"
+          begin
+            translation = translate.translate text, to: lang
+            write_to_chat "#{username} translated: #{text} to: #{translation.text.inspect} from: #{translation.from} to: #{translation.to}"
+          rescue 
+            write_to_chat "#{username} try this format: !!translate \"some text between double quotes\" lang_code (i.e.: en)"
+          end
         end
         
       end
