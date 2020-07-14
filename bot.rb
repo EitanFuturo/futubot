@@ -58,7 +58,7 @@ class TwitchBot
           translate = Google::Cloud::Translate.translation_v2_service project_id: @api_project_id
           begin
             translation = translate.translate text, to: lang
-            write_to_chat "#{username} translated: #{text} to: #{translation.text.inspect} from: #{translation.from} to: #{translation.to}"
+            write_to_chat "#{username} #{translation.text.inspect} translated from #{translation.from} to #{translation.to}"
           rescue 
             write_to_chat "#{username} try this format: !!translate \"some text between double quotes\" lang_code (i.e.: en)"
           end
