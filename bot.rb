@@ -1,5 +1,5 @@
 require 'socket'
-require 'byebug'
+#require 'byebug'
 require 'dotenv/load'
 require "google/cloud/translate"
 
