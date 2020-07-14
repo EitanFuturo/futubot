@@ -1,6 +1,6 @@
 require 'socket'
 #require 'byebug'
-require 'dotenv/load'
+#require 'dotenv/load'
 require "google/cloud/translate"
 
 TWITCH_HOST = "irc.chat.twitch.tv"
